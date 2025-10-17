@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 import Places from "./components/Places.jsx";
 import { AVAILABLE_PLACES } from "./data.js";
@@ -12,9 +12,8 @@ function App() {
     const storePlaces = storeIds.map((id) =>
         AVAILABLE_PLACES.find((place) => place.id === id)
     );
-
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const selectedPlace = useRef();
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [availablePlaces, setAvailablePlaces] = useState([]);
     const [pickedPlaces, setPickedPlaces] = useState(storePlaces);
 
@@ -38,7 +37,7 @@ function App() {
         setModalIsOpen(false);
     }
 
-    function handleSelectPlace(id) {
+    const handleSelectPlace = useCallback(function handleSelectPlace(id) {
         setPickedPlaces((prevPickedPlaces) => {
             if (prevPickedPlaces.some((place) => place.id === id)) {
                 return prevPickedPlaces;
@@ -55,7 +54,7 @@ function App() {
                 JSON.stringify([id, ...storeIds])
             );
         }
-    }
+    }, []);
 
     function handleRemovePlace() {
         setPickedPlaces((prevPickedPlaces) =>
@@ -77,12 +76,14 @@ function App() {
 
     return (
         <>
-            <Modal open={modalIsOpen}>
-                <DeleteConfirmation
-                    onCancel={handleStopRemovePlace}
-                    onConfirm={handleRemovePlace}
-                />
-            </Modal>
+            {modalIsOpen && (
+                <Modal open={modalIsOpen}>
+                    <DeleteConfirmation
+                        onCancel={handleStopRemovePlace}
+                        onConfirm={handleRemovePlace}
+                    />
+                </Modal>
+            )}
 
             <header>
                 <img src={logoImg} alt="Stylized globe" />
