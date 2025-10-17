@@ -20,7 +20,6 @@ export default function DeleteConfirmation({ onConfirm, onCancel }) {
         return () => clearTimeout(timeTest);
     }, []);
 
-    console.log(remainingTime / 1000);
     let remainingTimeInSeconds = remainingTime / 1000;
     return (
         <div id="delete-confirmation">
